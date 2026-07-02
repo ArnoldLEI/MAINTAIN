@@ -110,13 +110,13 @@ export default function App() {
     };
 
     return (
-        <div className="flex h-screen bg-slate-50 font-sans text-slate-800 overflow-hidden relative">
+        <div className="flex h-screen bg-slate-950 font-sans text-slate-100 overflow-hidden relative">
 
             {/* Loading Overlay */}
             {isLoadingData && (
-                <div className="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center animate-out fade-out duration-500 delay-1000 pointer-events-none">
-                    <Loader2 className="w-10 h-10 text-blue-600 animate-spin mb-3" />
-                    <p className="text-slate-500 font-medium">系統初始化中...</p>
+                <div className="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center animate-out fade-out duration-500 delay-1000 pointer-events-none">
+                    <Loader2 className="w-10 h-10 text-blue-500 animate-spin mb-3" />
+                    <p className="text-slate-400 font-medium">系統紀錄載入中...</p>
                 </div>
             )}
 

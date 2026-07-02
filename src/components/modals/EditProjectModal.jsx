@@ -88,57 +88,57 @@ export default function EditProjectModal({ isOpen, onClose, project, tasks, onSa
     if (!isOpen || !editingProjectData) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white rounded-xl shadow-2xl w-[800px] flex flex-col max-h-[90vh]">
-                <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50 shrink-0">
-                    <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                        <Pencil className="w-5 h-5 text-blue-600" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl w-[800px] flex flex-col max-h-[90vh]">
+                <div className="p-5 border-b border-slate-800 flex justify-between items-center bg-slate-950/40 shrink-0">
+                    <h3 className="text-lg font-bold text-slate-100 flex items-center gap-2">
+                        <Pencil className="w-5 h-5 text-blue-400" />
                         編輯案號與點位
                     </h3>
-                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+                    <button onClick={onClose} className="text-slate-500 hover:text-slate-300">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-6 space-y-6">
                     {/* 1. Basic Info */}
-                    <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                        <h4 className="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
-                            <Info className="w-4 h-4" /> 專案基本資料
+                    <div className="bg-slate-950/30 p-4 rounded-lg border border-slate-800">
+                        <h4 className="text-sm font-bold text-slate-300 mb-3 flex items-center gap-2">
+                            <Info className="w-4 h-4 text-blue-400" /> 專案基本資料
                         </h4>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-xs font-semibold text-slate-500 mb-1">案號 ID (修改將同步更新點位)</label>
+                                <label className="block text-xs font-semibold text-slate-400 mb-1">案號 ID (修改將同步更新點位)</label>
                                 <input
                                     type="text"
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-mono text-blue-700 font-bold"
+                                    className="w-full px-3 py-2 bg-slate-850 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-mono text-blue-400 font-bold"
                                     value={editingProjectData.id}
                                     onChange={e => setEditingProjectData({ ...editingProjectData, id: e.target.value })}
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-semibold text-slate-500 mb-1">專案名稱</label>
+                                <label className="block text-xs font-semibold text-slate-400 mb-1">專案名稱</label>
                                 <input
                                     type="text"
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                    className="w-full px-3 py-2 bg-slate-850 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-slate-200"
                                     value={editingProjectData.name}
                                     onChange={e => setEditingProjectData({ ...editingProjectData, name: e.target.value })}
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-semibold text-slate-500 mb-1">所屬客戶</label>
+                                <label className="block text-xs font-semibold text-slate-400 mb-1">所屬客戶</label>
                                 <input
                                     type="text"
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                    className="w-full px-3 py-2 bg-slate-850 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-slate-200"
                                     value={editingProjectData.clientId}
                                     onChange={e => setEditingProjectData({ ...editingProjectData, clientId: e.target.value })}
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-semibold text-slate-500 mb-1">起始日期</label>
+                                <label className="block text-xs font-semibold text-slate-400 mb-1">起始日期</label>
                                 <input
                                     type="date"
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                    className="w-full px-3 py-2 bg-slate-850 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-slate-200"
                                     value={editingProjectData.startDate}
                                     onChange={e => setEditingProjectData({ ...editingProjectData, startDate: e.target.value })}
                                 />
@@ -149,21 +149,21 @@ export default function EditProjectModal({ isOpen, onClose, project, tasks, onSa
                     {/* 2. Task Management */}
                     <div>
                         <div className="flex justify-between items-center mb-3">
-                            <h4 className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                                <ListFilter className="w-4 h-4" />
+                            <h4 className="text-sm font-bold text-slate-300 flex items-center gap-2">
+                                <ListFilter className="w-4 h-4 text-purple-400" />
                                 點位管理 ({editingProjectTasks.length})
                             </h4>
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => setManualAddTaskModal(true)}
-                                    className="text-xs bg-white text-blue-700 border border-blue-200 px-3 py-1.5 rounded-md hover:bg-blue-50 flex items-center gap-1 transition-colors"
+                                    className="text-xs bg-slate-850 text-blue-400 border border-slate-700 px-3 py-1.5 rounded-md hover:bg-slate-750 flex items-center gap-1 transition-colors"
                                 >
                                     <PlusCircle className="w-3 h-3" />
                                     手動新增
                                 </button>
                                 <button
                                     onClick={() => fileInputRef.current.click()}
-                                    className="text-xs bg-green-50 text-green-700 border border-green-200 px-3 py-1.5 rounded-md hover:bg-green-100 flex items-center gap-1 transition-colors"
+                                    className="text-xs bg-green-950/30 text-green-400 border border-green-900/30 px-3 py-1.5 rounded-md hover:bg-green-950/60 flex items-center gap-1 transition-colors"
                                 >
                                     <UploadCloud className="w-3 h-3" />
                                     匯入 (追加)
@@ -178,23 +178,23 @@ export default function EditProjectModal({ isOpen, onClose, project, tasks, onSa
                             </div>
                         </div>
 
-                        <div className="border border-slate-200 rounded-lg overflow-hidden h-64 flex flex-col bg-white">
-                            <div className="bg-slate-100 px-4 py-2 border-b border-slate-200 grid grid-cols-12 text-xs font-semibold text-slate-500">
+                        <div className="border border-slate-800 rounded-lg overflow-hidden h-64 flex flex-col bg-slate-900">
+                            <div className="bg-slate-950 px-4 py-2 border-b border-slate-800 grid grid-cols-12 text-xs font-semibold text-slate-400">
                                 <div className="col-span-3">行政區</div>
                                 <div className="col-span-5">單位名稱</div>
                                 <div className="col-span-3">上次保養</div>
                                 <div className="col-span-1 text-center">操作</div>
                             </div>
-                            <div className="overflow-y-auto flex-1 divide-y divide-slate-100">
+                            <div className="overflow-y-auto flex-1 divide-y divide-slate-800">
                                 {editingProjectTasks.map((task) => (
-                                    <div key={task.id} className="px-4 py-2 grid grid-cols-12 text-sm items-center hover:bg-slate-50">
-                                        <div className="col-span-3 truncate pr-2"><span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-xs">{task.district}</span></div>
-                                        <div className="col-span-5 truncate font-medium text-slate-700 pr-2">{task.location}</div>
-                                        <div className="col-span-3 text-xs text-slate-400 font-mono">{task.lastServiceDate || '無紀錄'}</div>
+                                    <div key={task.id} className="px-4 py-2 grid grid-cols-12 text-sm items-center hover:bg-slate-800/40">
+                                        <div className="col-span-3 truncate pr-2"><span className="bg-slate-800 text-slate-300 px-2 py-0.5 rounded text-xs border border-slate-700/50">{task.district}</span></div>
+                                        <div className="col-span-5 truncate font-medium text-slate-200 pr-2">{task.location}</div>
+                                        <div className="col-span-3 text-xs text-slate-500 font-mono">{task.lastServiceDate || '無紀錄'}</div>
                                         <div className="col-span-1 text-center">
                                             <button
                                                 onClick={() => handleDeleteTask(task.id)}
-                                                className="text-slate-400 hover:text-red-500 hover:bg-red-50 p-1 rounded transition-colors"
+                                                className="text-slate-500 hover:text-red-400 hover:bg-red-950/30 p-1 rounded transition-colors"
                                                 title="移除此點位"
                                             >
                                                 <X className="w-4 h-4" />
@@ -203,7 +203,7 @@ export default function EditProjectModal({ isOpen, onClose, project, tasks, onSa
                                     </div>
                                 ))}
                                 {editingProjectTasks.length === 0 && (
-                                    <div className="p-8 text-center text-slate-400 text-sm">
+                                    <div className="p-8 text-center text-slate-500 text-sm">
                                         此專案目前沒有維護點位
                                     </div>
                                 )}
@@ -212,16 +212,16 @@ export default function EditProjectModal({ isOpen, onClose, project, tasks, onSa
                     </div>
                 </div>
 
-                <div className="p-5 border-t border-slate-100 flex justify-end gap-3 bg-slate-50 shrink-0">
+                <div className="p-5 border-t border-slate-800 flex justify-end gap-3 bg-slate-950/40 shrink-0">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 text-slate-500 hover:bg-slate-200 rounded-lg transition-colors"
+                        className="px-4 py-2 text-slate-400 hover:bg-slate-800 rounded-lg transition-colors"
                     >
                         取消
                     </button>
                     <button
                         onClick={handleSave}
-                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm font-medium transition-colors flex items-center gap-2"
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg shadow-md font-medium transition-colors flex items-center gap-2"
                     >
                         <Save className="w-4 h-4" />
                         儲存變更

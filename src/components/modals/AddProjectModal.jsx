@@ -102,14 +102,14 @@ export default function AddProjectModal({ isOpen, onClose, onAdd }) {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white rounded-xl shadow-2xl w-[600px] overflow-hidden flex flex-col max-h-[90vh]">
-                <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                    <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                        <Plus className="w-5 h-5 text-blue-600" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl w-[600px] overflow-hidden flex flex-col max-h-[90vh]">
+                <div className="p-5 border-b border-slate-800 flex justify-between items-center bg-slate-950/40">
+                    <h3 className="text-lg font-bold text-slate-100 flex items-center gap-2">
+                        <Plus className="w-5 h-5 text-blue-400" />
                         新增維護案號
                     </h3>
-                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+                    <button onClick={onClose} className="text-slate-500 hover:text-slate-300">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
@@ -118,40 +118,40 @@ export default function AddProjectModal({ isOpen, onClose, onAdd }) {
                     {/* Basic Info */}
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-xs font-semibold text-slate-500 mb-1">案號 ID</label>
+                            <label className="block text-xs font-semibold text-slate-400 mb-1">案號 ID</label>
                             <input
                                 type="text"
                                 placeholder="例如：P-2025-005"
-                                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 py-2 bg-slate-850 border border-slate-700 text-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                                 value={newProjectData.id}
                                 onChange={e => setNewProjectData({ ...newProjectData, id: e.target.value })}
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-semibold text-slate-500 mb-1">專案名稱</label>
+                            <label className="block text-xs font-semibold text-slate-400 mb-1">專案名稱</label>
                             <input
                                 type="text"
                                 placeholder="例如：南港展覽館消防巡檢"
-                                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 py-2 bg-slate-850 border border-slate-700 text-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                                 value={newProjectData.name}
                                 onChange={e => setNewProjectData({ ...newProjectData, name: e.target.value })}
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-semibold text-slate-500 mb-1">所屬客戶</label>
+                            <label className="block text-xs font-semibold text-slate-400 mb-1">所屬客戶</label>
                             <input
                                 type="text"
                                 placeholder="客戶名稱"
-                                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 py-2 bg-slate-850 border border-slate-700 text-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                                 value={newProjectData.client}
                                 onChange={e => setNewProjectData({ ...newProjectData, client: e.target.value })}
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-semibold text-slate-500 mb-1">起始日期 (季週期基準)</label>
+                            <label className="block text-xs font-semibold text-slate-400 mb-1">起始日期 (季週期基準)</label>
                             <input
                                 type="date"
-                                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 py-2 bg-slate-850 border border-slate-700 text-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                                 value={newProjectData.startDate}
                                 onChange={e => setNewProjectData({ ...newProjectData, startDate: e.target.value })}
                             />
@@ -159,14 +159,14 @@ export default function AddProjectModal({ isOpen, onClose, onAdd }) {
                     </div>
 
                     {/* Import Area */}
-                    <div className="border-t border-slate-100 pt-4">
-                        <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
-                            <FileSpreadsheet className="w-4 h-4 text-green-600" />
+                    <div className="border-t border-slate-800 pt-4">
+                        <label className="block text-sm font-bold text-slate-300 mb-2 flex items-center gap-2">
+                            <FileSpreadsheet className="w-4 h-4 text-green-400" />
                             匯入維護點位 (Excel)
                         </label>
 
                         <div
-                            className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center text-center transition-colors cursor-pointer ${importedPoints.length > 0 ? 'border-green-300 bg-green-50' : 'border-slate-300 hover:border-blue-400 hover:bg-slate-50'
+                            className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center text-center transition-colors cursor-pointer ${importedPoints.length > 0 ? 'border-green-800 bg-green-950/20 text-green-300' : 'border-slate-700 hover:border-blue-500 hover:bg-slate-850/50'
                                 }`}
                             onClick={() => fileInputRef.current.click()}
                         >
@@ -179,38 +179,38 @@ export default function AddProjectModal({ isOpen, onClose, onAdd }) {
                             />
 
                             {isImporting ? (
-                                <div className="text-blue-600 flex flex-col items-center animate-pulse">
+                                <div className="text-blue-400 flex flex-col items-center animate-pulse">
                                     <UploadCloud className="w-8 h-8 mb-2" />
                                     <span className="text-sm font-medium">讀取檔案中...</span>
                                 </div>
                             ) : importedPoints.length > 0 ? (
-                                <div className="text-green-700 flex flex-col items-center">
+                                <div className="text-green-400 flex flex-col items-center">
                                     <CheckCircle2 className="w-8 h-8 mb-2" />
                                     <span className="text-lg font-bold">{importedPoints.length} 筆點位</span>
-                                    <span className="text-xs mt-1">匯入成功！包含行政區、單位、上次保養日</span>
+                                    <span className="text-xs mt-1 text-green-300">匯入成功！包含行政區、單位、上次保養日</span>
                                 </div>
                             ) : (
-                                <div className="text-slate-400 flex flex-col items-center">
+                                <div className="text-slate-500 flex flex-col items-center">
                                     <UploadCloud className="w-8 h-8 mb-2" />
-                                    <span className="text-sm font-medium text-slate-600">點擊上傳 Excel 檔案</span>
-                                    <span className="text-xs mt-1">格式：行政區 | 單位 | 上次保養日期</span>
+                                    <span className="text-sm font-medium text-slate-400">點擊上傳 Excel 檔案</span>
+                                    <span className="text-xs mt-1 text-slate-500">格式：行政區 | 單位 | 上次保養日期</span>
                                 </div>
                             )}
                         </div>
                     </div>
                 </div>
 
-                <div className="p-5 border-t border-slate-100 flex justify-end gap-3 bg-slate-50">
+                <div className="p-5 border-t border-slate-800 flex justify-end gap-3 bg-slate-950/40">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 text-slate-500 hover:bg-slate-200 rounded-lg transition-colors"
+                        className="px-4 py-2 text-slate-400 hover:bg-slate-800 rounded-lg transition-colors"
                     >
                         取消
                     </button>
                     <button
                         onClick={handleSubmit}
                         disabled={importedPoints.length === 0}
-                        className={`px-4 py-2 text-white rounded-lg shadow-sm font-medium transition-colors flex items-center gap-2 ${importedPoints.length > 0 ? 'bg-blue-600 hover:bg-blue-700' : 'bg-slate-300 cursor-not-allowed'
+                        className={`px-4 py-2 text-white rounded-lg shadow-md font-medium transition-colors flex items-center gap-2 ${importedPoints.length > 0 ? 'bg-blue-600 hover:bg-blue-500' : 'bg-slate-800 text-slate-500 cursor-not-allowed'
                             }`}
                     >
                         <Plus className="w-4 h-4" />
