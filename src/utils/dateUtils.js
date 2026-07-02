@@ -54,16 +54,32 @@ export const getProjectQuarterData = (project) => {
         }
     }
 
+    let startYear = endYear;
+    if (currentQEndMonth < currentQStartMonth) {
+        startYear = endYear - 1;
+    }
+
+    const qStartDate = new Date(startYear, currentQStartMonth, 1);
     const qEndDate = new Date(endYear, currentQEndMonth + 1, 0);
 
-    const diffTime = qEndDate - now;
+    // Calculate daysLeft by setting both to local midnight
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const diffTime = qEndDate - today;
     let daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     if (daysLeft < 0) daysLeft = 0;
 
     const m1 = currentQStartMonth + 1;
     const m3 = currentQEndMonth + 1;
     const range = `${m1}-${m3}月`;
-    const rangeText = `${endYear}-${String(m1).padStart(2, '0')} ~ ${qEndDate.toISOString().split('T')[0]}`;
+
+    const formatLocal = (date) => {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    };
+
+    const rangeText = `${formatLocal(qStartDate)} ~ ${formatLocal(qEndDate)}`;
 
     return {
         qName: `Q${qIndex + 1}`,
