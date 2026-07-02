@@ -169,16 +169,6 @@ export default function ProjectDashboard({ project, tasks, updateTask }) {
 
                             <div className="grid grid-cols-2 gap-3 mt-4">
                                 <button
-                                    onClick={() => setViewMode('completed')}
-                                    className={`p-3 rounded-xl border text-center transition-all duration-200 ${viewMode === 'completed'
-                                        ? 'bg-emerald-950/30 border-emerald-500/80 ring-2 ring-emerald-900/30 shadow-md text-emerald-300'
-                                        : 'bg-slate-800/40 border-slate-700 text-slate-400 hover:bg-emerald-950/20 hover:border-emerald-700/50 hover:text-emerald-300'
-                                        }`}
-                                >
-                                    <div className="text-xl font-bold">{projectStats.completedCount}</div>
-                                    <div className="text-xs font-medium">完成點位</div>
-                                </button>
-                                <button
                                     onClick={() => setViewMode('pending')}
                                     className={`p-3 rounded-xl border text-center transition-all duration-200 ${viewMode === 'pending'
                                         ? 'bg-orange-950/30 border-orange-500/80 ring-2 ring-orange-900/30 shadow-md text-orange-300'
@@ -187,6 +177,16 @@ export default function ProjectDashboard({ project, tasks, updateTask }) {
                                 >
                                     <div className="text-xl font-bold">{projectStats.totalCount - projectStats.completedCount}</div>
                                     <div className="text-xs font-medium">剩餘點位</div>
+                                </button>
+                                <button
+                                    onClick={() => setViewMode('completed')}
+                                    className={`p-3 rounded-xl border text-center transition-all duration-200 ${viewMode === 'completed'
+                                        ? 'bg-emerald-950/30 border-emerald-500/80 ring-2 ring-emerald-900/30 shadow-md text-emerald-300'
+                                        : 'bg-slate-800/40 border-slate-700 text-slate-400 hover:bg-emerald-950/20 hover:border-emerald-700/50 hover:text-emerald-300'
+                                        }`}
+                                >
+                                    <div className="text-xl font-bold">{projectStats.completedCount}</div>
+                                    <div className="text-xs font-medium">完成點位</div>
                                 </button>
                             </div>
                         </div>
