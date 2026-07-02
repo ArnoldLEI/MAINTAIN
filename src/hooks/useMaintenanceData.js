@@ -7,39 +7,75 @@ export const useMaintenanceData = () => {
     const [tasks, setTasks] = useState([]);
     const [isLoadingData, setIsLoadingData] = useState(true);
 
-    // Load initial data from localStorage or mock data
+    // Helper function to save to server
+    const saveToServer = async (projectsData, tasksData) => {
+        try {
+            await fetch('/api/data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ projects: projectsData, tasks: tasksData })
+            });
+        } catch (e) {
+            console.error("Failed to save data to local server:", e);
+        }
+    };
+
+    // Load initial data from local server or localStorage or mock data
     useEffect(() => {
         const fetchData = async () => {
             setIsLoadingData(true);
-            // Simulate subtle delay for better UX (optional, but keeps consistent feel)
             await new Promise(resolve => setTimeout(resolve, 500));
+
+            try {
+                const response = await fetch('/api/data');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.projects && data.tasks) {
+                        setProjects(data.projects);
+                        setTasks(data.tasks);
+                        
+                        // Sync backup to localStorage
+                        localStorage.setItem('MAINTAINSYS_PROJECTS', JSON.stringify(data.projects));
+                        localStorage.setItem('MAINTAINSYS_TASKS', JSON.stringify(data.tasks));
+                        setIsLoadingData(false);
+                        return;
+                    }
+                }
+            } catch (apiError) {
+                console.warn("Failed to fetch from API, trying localStorage fallback:", apiError);
+            }
 
             try {
                 const storedProjects = localStorage.getItem('MAINTAINSYS_PROJECTS');
                 const storedTasks = localStorage.getItem('MAINTAINSYS_TASKS');
 
                 if (storedProjects && storedTasks) {
-                    setProjects(JSON.parse(storedProjects));
-                    setTasks(JSON.parse(storedTasks));
+                    const parsedProjects = JSON.parse(storedProjects);
+                    const parsedTasks = JSON.parse(storedTasks);
+                    setProjects(parsedProjects);
+                    setTasks(parsedTasks);
+                    
+                    // Sync back to API server
+                    saveToServer(parsedProjects, parsedTasks);
                 } else {
                     // First time load: use mock data
                     const initialProjects = INITIAL_PROJECTS;
                     const initialTasks = generateTasks();
-
+                    
                     setProjects(initialProjects);
                     setTasks(initialTasks);
-
-                    // Save to storage immediately
+                    
+                    // Save to both
                     localStorage.setItem('MAINTAINSYS_PROJECTS', JSON.stringify(initialProjects));
                     localStorage.setItem('MAINTAINSYS_TASKS', JSON.stringify(initialTasks));
+                    saveToServer(initialProjects, initialTasks);
                 }
             } catch (error) {
-                console.error("Failed to load data from localStorage:", error);
-                // Fallback to mock data on error
+                console.error("Failed to load fallback data:", error);
                 setProjects(INITIAL_PROJECTS);
                 setTasks(generateTasks());
             }
-
+            
             setIsLoadingData(false);
         };
         fetchData();
@@ -50,6 +86,7 @@ export const useMaintenanceData = () => {
         if (!isLoadingData) {
             localStorage.setItem('MAINTAINSYS_PROJECTS', JSON.stringify(projects));
             localStorage.setItem('MAINTAINSYS_TASKS', JSON.stringify(tasks));
+            saveToServer(projects, tasks);
         }
     }, [projects, tasks, isLoadingData]);
 
