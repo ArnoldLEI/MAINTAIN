@@ -118,40 +118,40 @@ export default function AddProjectModal({ isOpen, onClose, onAdd }) {
                     {/* Basic Info */}
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-xs font-semibold text-slate-400 mb-1">案號 ID</label>
+                            <label className="block text-xs font-bold text-slate-300 mb-1">案號 ID</label>
                             <input
                                 type="text"
                                 placeholder="例如：P-2025-005"
-                                className="w-full px-3 py-2 bg-slate-850 border border-slate-700 text-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 py-2 bg-slate-800 border border-slate-600 text-white placeholder-slate-400 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                                 value={newProjectData.id}
                                 onChange={e => setNewProjectData({ ...newProjectData, id: e.target.value })}
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-semibold text-slate-400 mb-1">專案名稱</label>
+                            <label className="block text-xs font-bold text-slate-300 mb-1">專案名稱</label>
                             <input
                                 type="text"
                                 placeholder="例如：南港展覽館消防巡檢"
-                                className="w-full px-3 py-2 bg-slate-850 border border-slate-700 text-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 py-2 bg-slate-800 border border-slate-600 text-white placeholder-slate-400 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                                 value={newProjectData.name}
                                 onChange={e => setNewProjectData({ ...newProjectData, name: e.target.value })}
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-semibold text-slate-400 mb-1">所屬客戶</label>
+                            <label className="block text-xs font-bold text-slate-300 mb-1">所屬客戶</label>
                             <input
                                 type="text"
                                 placeholder="客戶名稱"
-                                className="w-full px-3 py-2 bg-slate-850 border border-slate-700 text-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 py-2 bg-slate-800 border border-slate-600 text-white placeholder-slate-400 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                                 value={newProjectData.client}
                                 onChange={e => setNewProjectData({ ...newProjectData, client: e.target.value })}
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-semibold text-slate-400 mb-1">起始日期 (季週期基準)</label>
+                            <label className="block text-xs font-bold text-slate-300 mb-1">起始日期 (季週期基準)</label>
                             <input
                                 type="date"
-                                className="w-full px-3 py-2 bg-slate-850 border border-slate-700 text-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 py-2 bg-slate-800 border border-slate-600 text-white rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                                 value={newProjectData.startDate}
                                 onChange={e => setNewProjectData({ ...newProjectData, startDate: e.target.value })}
                             />
