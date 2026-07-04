@@ -3,7 +3,7 @@ import { PieChart, AlertCircle, Calendar, Building2, BarChart3, ListFilter, Chec
 import { getProjectQuarterData, getDaysDiff } from '../../utils/dateUtils';
 import { ConfirmCompletionModal, EditTaskDateModal } from '../modals/TaskModals';
 
-export default function ProjectDashboard({ project, tasks, updateTask }) {
+export default function ProjectDashboard({ project, tasks, updateTask, viewType = 'project' }) {
     const [viewMode, setViewMode] = useState('pending');
     const [taskDistrictFilter, setTaskDistrictFilter] = useState('All');
 
@@ -16,7 +16,7 @@ export default function ProjectDashboard({ project, tasks, updateTask }) {
     useEffect(() => {
         setTaskDistrictFilter('All');
         setViewMode('pending');
-    }, [project?.id]);
+    }, [project?.id, project?.name]);
 
     const projectQuarterInfo = useMemo(() => getProjectQuarterData(project), [project]);
 
@@ -27,8 +27,9 @@ export default function ProjectDashboard({ project, tasks, updateTask }) {
         const totalCount = projectTasks.length;
         const progress = totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
         const involvedDistricts = [...new Set(projectTasks.map(t => t.district))].sort();
+        const involvedProjects = [...new Set(projectTasks.map(t => t.projectId))].sort();
 
-        return { completedCount, totalCount, progress, involvedDistricts };
+        return { completedCount, totalCount, progress, involvedDistricts, involvedProjects };
     }, [project, tasks]);
 
     const displayedTasks = useMemo(() => {
@@ -37,7 +38,11 @@ export default function ProjectDashboard({ project, tasks, updateTask }) {
         let filteredTasks = tasks.filter(t => t.status === targetStatus);
 
         if (taskDistrictFilter !== 'All') {
-            filteredTasks = filteredTasks.filter(t => t.district === taskDistrictFilter);
+            if (viewType === 'project') {
+                filteredTasks = filteredTasks.filter(t => t.district === taskDistrictFilter);
+            } else {
+                filteredTasks = filteredTasks.filter(t => t.projectId === taskDistrictFilter);
+            }
         }
 
         return filteredTasks.map(t => {
@@ -45,15 +50,17 @@ export default function ProjectDashboard({ project, tasks, updateTask }) {
             const isLocked = daysSince < 61;
             return { ...t, daysSince, isLocked };
         });
-    }, [project, tasks, viewMode, taskDistrictFilter]);
+    }, [project, tasks, viewMode, taskDistrictFilter, viewType]);
 
     if (!project) {
         return (
             <div className="flex-1 flex flex-col items-center justify-center text-slate-400">
-                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
-                    <Calendar className="w-8 h-8 text-slate-300" />
+                <div className="w-16 h-16 bg-slate-900 border border-slate-800 rounded-full flex items-center justify-center mb-4">
+                    <Calendar className="w-8 h-8 text-slate-500" />
                 </div>
-                <p className="text-lg font-medium text-slate-600">請從左側選擇一個案號以檢視詳細資料</p>
+                <p className="text-lg font-medium text-slate-450">
+                    請從左側選擇一個{viewType === 'project' ? '案號' : '行政區'}以檢視詳細資料
+                </p>
             </div>
         );
     }
@@ -99,7 +106,10 @@ export default function ProjectDashboard({ project, tasks, updateTask }) {
                 <div>
                     <div className="flex items-center gap-3 mb-1">
                         <h2 className="text-2xl font-bold text-slate-100 truncate max-w-md">{project.name}</h2>
-                        <span className="bg-blue-950/40 text-blue-400 text-sm px-2 py-0.5 rounded-md font-medium border border-blue-900/50 whitespace-nowrap">
+                        <span className={`text-sm px-2 py-0.5 rounded-md font-medium whitespace-nowrap border ${viewType === 'district'
+                            ? 'bg-purple-950/40 text-purple-400 border-purple-900/50'
+                            : 'bg-blue-950/40 text-blue-400 border-blue-900/50'
+                            }`}>
                             {project.id}
                         </span>
                     </div>
@@ -239,21 +249,33 @@ export default function ProjectDashboard({ project, tasks, updateTask }) {
                                         <button onClick={() => setViewMode('pending')} className={`p-1.5 rounded-md transition-all ${viewMode === 'pending' ? 'bg-slate-850 shadow-sm text-red-450 font-bold' : 'text-slate-500 hover:text-slate-450'}`}><ListFilter className="w-4 h-4" /></button>
                                         <button onClick={() => setViewMode('completed')} className={`p-1.5 rounded-md transition-all ${viewMode === 'completed' ? 'bg-slate-850 shadow-sm text-emerald-450 font-bold' : 'text-slate-500 hover:text-slate-450'}`}><CheckCircle2 className="w-4 h-4" /></button>
                                     </div>
-                                    {projectStats.involvedDistricts.length > 1 && (
-                                        <div className="flex items-center gap-2">
-                                            <Filter className="w-4 h-4 text-slate-500" />
-                                            <select className="text-sm border border-slate-700 rounded-md px-2 py-1 bg-slate-800 text-slate-200 focus:outline-none focus:border-blue-500" value={taskDistrictFilter} onChange={(e) => setTaskDistrictFilter(e.target.value)}>
-                                                <option value="All">所有區域</option>
-                                                {projectStats.involvedDistricts.map(d => (<option key={d} value={d}>{d}</option>))}
-                                            </select>
-                                        </div>
+                                    {viewType === 'project' ? (
+                                        projectStats.involvedDistricts.length > 1 && (
+                                            <div className="flex items-center gap-2">
+                                                <Filter className="w-4 h-4 text-slate-500" />
+                                                <select className="text-sm border border-slate-700 rounded-md px-2 py-1 bg-slate-800 text-slate-200 focus:outline-none focus:border-blue-500" value={taskDistrictFilter} onChange={(e) => setTaskDistrictFilter(e.target.value)}>
+                                                    <option value="All">所有區域</option>
+                                                    {projectStats.involvedDistricts.map(d => (<option key={d} value={d}>{d}</option>))}
+                                                </select>
+                                            </div>
+                                        )
+                                    ) : (
+                                        projectStats.involvedProjects.length > 1 && (
+                                            <div className="flex items-center gap-2">
+                                                <Filter className="w-4 h-4 text-slate-500" />
+                                                <select className="text-sm border border-slate-700 rounded-md px-2 py-1 bg-slate-800 text-slate-200 focus:outline-none focus:border-blue-500" value={taskDistrictFilter} onChange={(e) => setTaskDistrictFilter(e.target.value)}>
+                                                    <option value="All">所有案號</option>
+                                                    {projectStats.involvedProjects.map(pId => (<option key={pId} value={pId}>{pId}</option>))}
+                                                </select>
+                                            </div>
+                                        )
                                     )}
                                 </div>
                             </div>
 
                             <div className="flex-1 overflow-y-auto flex flex-col">
                                 <div className="sticky top-0 z-10 bg-slate-950 border-b border-slate-800 grid grid-cols-12 px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider shrink-0">
-                                    <div className="col-span-2 text-center">行政區</div>
+                                    <div className="col-span-2 text-center">{viewType === 'district' ? '專案案號' : '行政區'}</div>
                                     <div className="col-span-4">單位</div>
                                     <div className="col-span-3 text-center">上次保養</div>
                                     <div className="col-span-3 text-center">{viewMode === 'pending' ? '操作' : '完工日期'}</div>
@@ -263,7 +285,14 @@ export default function ProjectDashboard({ project, tasks, updateTask }) {
                                     <div className="divide-y divide-slate-800">
                                         {displayedTasks.map((task) => (
                                             <div key={task.id} className={`grid grid-cols-12 px-6 py-3 items-center transition-colors group ${task.isLocked && viewMode === 'pending' ? 'bg-slate-950/40 text-slate-500' : 'hover:bg-slate-800/40'}`}>
-                                                <div className="col-span-2 flex justify-center"><span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${viewMode === 'pending' ? 'bg-slate-800 text-slate-300 border border-slate-700' : 'bg-emerald-950/40 text-emerald-450 border border-emerald-900/30'}`}>{task.district}</span></div>
+                                                <div className="col-span-2 flex justify-center">
+                                                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold border ${viewType === 'district'
+                                                        ? (viewMode === 'pending' ? 'bg-purple-950/40 text-purple-400 border-purple-900/30' : 'bg-emerald-950/40 text-emerald-450 border-emerald-900/30')
+                                                        : (viewMode === 'pending' ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-emerald-950/40 text-emerald-450 border-emerald-900/30')
+                                                        }`}>
+                                                        {viewType === 'district' ? task.projectId : task.district}
+                                                    </span>
+                                                </div>
                                                 <div className="col-span-4 pr-2">
                                                     <div className={`font-medium truncate ${task.isLocked && viewMode === 'pending' ? 'text-slate-500' : 'text-slate-200'}`} title={task.location}>{task.location}</div>
                                                     <div className="text-xs text-slate-500 font-mono mt-0.5">{task.id}</div>

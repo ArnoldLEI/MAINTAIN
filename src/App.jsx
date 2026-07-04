@@ -19,7 +19,9 @@ export default function App() {
         updateTask
     } = useMaintenanceData();
 
+    const [viewType, setViewType] = useState('project'); // 'project' or 'district'
     const [selectedProjectId, setSelectedProjectId] = useState(null);
+    const [selectedDistrict, setSelectedDistrict] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
 
     // Modals Data
@@ -27,12 +29,25 @@ export default function App() {
     const [editProjectModal, setEditProjectModal] = useState({ isOpen: false, project: null });
     const [deleteModal, setDeleteModal] = useState({ isOpen: false, project: null });
 
-    // Select logic: Default to first if none selected and data loaded
+    // Unique districts sorted
+    const districts = useMemo(() => {
+        const dSet = new Set(tasks.map(t => t.district).filter(Boolean));
+        return Array.from(dSet).sort();
+    }, [tasks]);
+
+    // Select project logic: Default to first project
     React.useEffect(() => {
         if (!isLoadingData && projects.length > 0 && !selectedProjectId) {
             setSelectedProjectId(projects[0].id);
         }
     }, [isLoadingData, projects, selectedProjectId]);
+
+    // Select district logic: Default to first district
+    React.useEffect(() => {
+        if (!isLoadingData && districts.length > 0 && (!selectedDistrict || !districts.includes(selectedDistrict))) {
+            setSelectedDistrict(districts[0]);
+        }
+    }, [isLoadingData, districts, selectedDistrict]);
 
     // Derived State
     const enrichedProjects = useMemo(() => {
@@ -53,9 +68,8 @@ export default function App() {
 
             return {
                 ...project,
-                // clientName: CLIENTS.find(c => c.id === project.clientId)?.name || project.clientId, // Simplified below
                 clientName: project.clientId === 'C001' ? '台北捷運公司' :
-                    project.clientId === 'C005' ? '中華郵政' : project.clientId, // Hardcode for demo or import
+                    project.clientId === 'C005' ? '中華郵政' : project.clientId,
                 progress,
                 completedCount,
                 totalCount
@@ -63,8 +77,28 @@ export default function App() {
         });
     }, [projects, tasks]);
 
-    const currentProject = enrichedProjects.find(p => p.id === selectedProjectId);
-    const currentProjectTasks = tasks.filter(t => t.projectId === selectedProjectId);
+    const currentDistrictProject = useMemo(() => {
+        if (!selectedDistrict) return null;
+        const districtTasks = tasks.filter(t => t.district === selectedDistrict);
+        const completedCount = districtTasks.filter(t => t.status === 'Completed').length;
+        const totalCount = districtTasks.length;
+        const progress = totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
+
+        return {
+            id: '行政區',
+            name: selectedDistrict,
+            clientName: `跨案號點位彙整`,
+            progress,
+            completedCount,
+            totalCount,
+            startDate: `${new Date().getFullYear()}-01-01` // standard calendar quarters
+        };
+    }, [selectedDistrict, tasks]);
+
+    const dashboardProject = viewType === 'project' ? enrichedProjects.find(p => p.id === selectedProjectId) : currentDistrictProject;
+    const dashboardTasks = viewType === 'project'
+        ? tasks.filter(t => t.projectId === selectedProjectId)
+        : tasks.filter(t => t.district === selectedDistrict);
 
     // Handlers
     const handleAddProject = (data, points) => {
@@ -123,8 +157,13 @@ export default function App() {
             {/* Sidebar */}
             <Sidebar
                 projects={enrichedProjects} // Pass enriched for progress bars etc
+                tasks={tasks}
                 selectedProjectId={selectedProjectId}
+                selectedDistrict={selectedDistrict}
+                viewType={viewType}
+                setViewType={setViewType}
                 onSelectProject={setSelectedProjectId}
+                onSelectDistrict={setSelectedDistrict}
                 onAddProject={() => setIsAddModalOpen(true)}
                 onEditProject={handleEditProjectClick}
                 onDeleteProject={handleDeleteProjectClick}
@@ -134,9 +173,10 @@ export default function App() {
 
             {/* Main Content */}
             <ProjectDashboard
-                project={currentProject}
-                tasks={currentProjectTasks}
+                project={dashboardProject}
+                tasks={dashboardTasks}
                 updateTask={updateTask}
+                viewType={viewType}
             />
 
             {/* Modals */}
