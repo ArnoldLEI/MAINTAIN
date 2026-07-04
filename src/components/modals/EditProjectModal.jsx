@@ -142,7 +142,12 @@ export default function EditProjectModal({ isOpen, onClose, project, tasks, onSa
                                     value={editingProjectData.startDate}
                                     onChange={e => setEditingProjectData({ ...editingProjectData, startDate: e.target.value })}
                                 />
-                        <div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 2. Task Management */}
+                    <div>
                         <div className="flex justify-between items-center mb-3">
                             <h4 className="text-sm font-bold text-slate-200 flex items-center gap-2">
                                 <ListFilter className="w-4 h-4 text-purple-300" />
