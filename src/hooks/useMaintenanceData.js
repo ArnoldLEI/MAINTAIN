@@ -126,28 +126,11 @@ export const useMaintenanceData = () => {
             return p;
         }));
 
-        // In the original code, `updatedTasks` replaces only the tasks for this project.
-        // We need to merge them back into the main `tasks` array.
-        // Filter out ALL tasks for the original projectId (or new one if ID changed? The original code handled ID change via `originalProjectId`)
-        // Wait, the hook needs to know if ID changed.
-        // Let's assume the component handles the ID change logic mapping before calling this, OR we pass `originalProjectId`.
-        // Simplified for now: We assume the caller handles the task list preparation.
-
-        // Actually, let's keep it robust.
-        // If ID changed, we need to remove old tasks and add new ones with new ID.
-        // The passed `updatedTasks` should already have the correct new `projectId`.
-
-        const newProjectId = updatedData.id;
-        // We need to know the OLD projectId to filter out old tasks. 
-        // But here we rely on the tasks having the correct ProjectId. 
-
-        // It's safer if we pass `originalProjectId`.
-        return (originalProjectId) => {
-            setTasks(prev => {
-                const otherTasks = prev.filter(t => t.projectId !== originalProjectId);
-                return [...otherTasks, ...updatedTasks];
-            });
-        };
+        // Filter out old tasks belonging to the original projectId, and append the updated tasks
+        setTasks(prev => {
+            const otherTasks = prev.filter(t => t.projectId !== projectId);
+            return [...otherTasks, ...updatedTasks];
+        });
     };
 
     const deleteProject = (projectId) => {
