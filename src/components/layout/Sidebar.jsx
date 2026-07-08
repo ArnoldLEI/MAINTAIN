@@ -47,7 +47,7 @@ export default function Sidebar({
     }, [districts, tasks]);
 
     return (
-        <div className="w-80 bg-slate-900 border-r border-slate-800 flex flex-col shadow-lg z-10 shrink-0 h-full">
+        <div className="w-full lg:w-80 bg-slate-900 border-r border-slate-800 flex flex-col shadow-lg z-10 shrink-0 h-full">
             <div className="p-4 border-b border-slate-800">
                 <div className="flex justify-between items-start mb-3">
                     <div className="flex items-center gap-2 text-blue-400">

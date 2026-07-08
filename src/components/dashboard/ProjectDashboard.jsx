@@ -1,9 +1,9 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { PieChart, AlertCircle, Calendar, Building2, BarChart3, ListFilter, CheckCircle2, Filter, History, Ban, FileEdit, Clock, AlertTriangle, Info } from 'lucide-react';
+import { PieChart, AlertCircle, Calendar, Building2, BarChart3, ListFilter, CheckCircle2, Filter, History, Ban, FileEdit, Clock, ArrowLeft, AlertTriangle, Info } from 'lucide-react';
 import { getProjectQuarterData, getDaysDiff } from '../../utils/dateUtils';
 import { ConfirmCompletionModal, EditTaskDateModal } from '../modals/TaskModals';
 
-export default function ProjectDashboard({ project, tasks, updateTask, viewType = 'project' }) {
+export default function ProjectDashboard({ project, tasks, updateTask, viewType = 'project', onBackToList }) {
     const [viewMode, setViewMode] = useState('pending');
     const [taskDistrictFilter, setTaskDistrictFilter] = useState('All');
 
@@ -104,7 +104,16 @@ export default function ProjectDashboard({ project, tasks, updateTask, viewType 
             {/* Header */}
             <header className="bg-slate-900 border-b border-slate-800 px-6 py-4 flex justify-between items-center shadow-md shrink-0">
                 <div>
-                    <div className="flex items-center gap-3 mb-1">
+                    <div className="flex items-center gap-2 mb-1">
+                        {onBackToList && (
+                            <button
+                                onClick={onBackToList}
+                                className="lg:hidden text-slate-300 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors mr-1"
+                                title="返回列表"
+                            >
+                                <ArrowLeft className="w-5 h-5" />
+                            </button>
+                        )}
                         <h2 className="text-2xl font-bold text-slate-100 truncate max-w-md">{project.name}</h2>
                         <span className={`text-sm px-2 py-0.5 rounded-md font-medium whitespace-nowrap border ${viewType === 'district'
                             ? 'bg-purple-950/40 text-purple-400 border-purple-900/50'
@@ -147,7 +156,7 @@ export default function ProjectDashboard({ project, tasks, updateTask, viewType 
             <main className="flex-1 overflow-hidden p-6">
                 <div className="grid grid-cols-12 gap-6 h-full max-w-7xl mx-auto">
                     {/* Left Stats */}
-                    <div className="col-span-12 lg:col-span-4 flex flex-col gap-6 overflow-y-auto pr-2">
+                    <div className="hidden lg:flex col-span-4 flex-col gap-6 overflow-y-auto pr-2">
                         <div className="bg-slate-900 p-6 rounded-2xl shadow-md border border-slate-800 shrink-0">
                             <h3 className="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
                                 <PieChart className="w-5 h-5 text-blue-400" />

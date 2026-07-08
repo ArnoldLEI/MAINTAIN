@@ -24,10 +24,23 @@ export default function App() {
     const [selectedDistrict, setSelectedDistrict] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
 
+    // Mobile navigation state
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+    const [mobileTab, setMobileTab] = useState('list'); // 'list' | 'details'
+
     // Modals Data
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [editProjectModal, setEditProjectModal] = useState({ isOpen: false, project: null });
     const [deleteModal, setDeleteModal] = useState({ isOpen: false, project: null });
+
+    // Window size listener
+    React.useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 1024);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     // Unique districts sorted
     const districts = useMemo(() => {
@@ -101,9 +114,26 @@ export default function App() {
         : tasks.filter(t => t.district === selectedDistrict);
 
     // Handlers
+    const handleSelectProject = (id) => {
+        setSelectedProjectId(id);
+        if (isMobile) {
+            setMobileTab('details');
+        }
+    };
+
+    const handleSelectDistrict = (d) => {
+        setSelectedDistrict(d);
+        if (isMobile) {
+            setMobileTab('details');
+        }
+    };
+
     const handleAddProject = (data, points) => {
         const newId = addProject(data, points);
         setSelectedProjectId(newId);
+        if (isMobile) {
+            setMobileTab('details');
+        }
     };
 
     const handleEditProjectClick = (e, project) => {
@@ -155,29 +185,34 @@ export default function App() {
             )}
 
             {/* Sidebar */}
-            <Sidebar
-                projects={enrichedProjects} // Pass enriched for progress bars etc
-                tasks={tasks}
-                selectedProjectId={selectedProjectId}
-                selectedDistrict={selectedDistrict}
-                viewType={viewType}
-                setViewType={setViewType}
-                onSelectProject={setSelectedProjectId}
-                onSelectDistrict={setSelectedDistrict}
-                onAddProject={() => setIsAddModalOpen(true)}
-                onEditProject={handleEditProjectClick}
-                onDeleteProject={handleDeleteProjectClick}
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-            />
+            {(!isMobile || mobileTab === 'list') && (
+                <Sidebar
+                    projects={enrichedProjects} // Pass enriched for progress bars etc
+                    tasks={tasks}
+                    selectedProjectId={selectedProjectId}
+                    selectedDistrict={selectedDistrict}
+                    viewType={viewType}
+                    setViewType={setViewType}
+                    onSelectProject={handleSelectProject}
+                    onSelectDistrict={handleSelectDistrict}
+                    onAddProject={() => setIsAddModalOpen(true)}
+                    onEditProject={handleEditProjectClick}
+                    onDeleteProject={handleDeleteProjectClick}
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                />
+            )}
 
             {/* Main Content */}
-            <ProjectDashboard
-                project={dashboardProject}
-                tasks={dashboardTasks}
-                updateTask={updateTask}
-                viewType={viewType}
-            />
+            {(!isMobile || mobileTab === 'details') && (
+                <ProjectDashboard
+                    project={dashboardProject}
+                    tasks={dashboardTasks}
+                    updateTask={updateTask}
+                    viewType={viewType}
+                    onBackToList={() => setMobileTab('list')}
+                />
+            )}
 
             {/* Modals */}
             <AddProjectModal

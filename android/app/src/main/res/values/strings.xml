@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">MaintainSYS</string>
+    <string name="title_activity_main">MaintainSYS</string>
+    <string name="package_name">com.maintainsys.app</string>
+    <string name="custom_url_scheme">com.maintainsys.app</string>
+</resources>
