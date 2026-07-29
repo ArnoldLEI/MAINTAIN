@@ -20,6 +20,32 @@ export const useMaintenanceData = () => {
         }
     };
 
+    const autoResetNewQuarterTasks = (projectsList, tasksList) => {
+        let hasChanges = false;
+        const updatedTasks = tasksList.map(t => {
+            const proj = projectsList.find(p => p.id === t.projectId);
+            if (!proj) return t;
+
+            const qStart = getQuarterStart(proj.startDate);
+            // If task is Completed, but the completion date is older than the current quarter's start date
+            if (t.status === 'Completed' && t.completedDate) {
+                const compDate = new Date(t.completedDate);
+                if (compDate < qStart) {
+                    hasChanges = true;
+                    return {
+                        ...t,
+                        status: 'Pending',
+                        lastServiceDate: t.completedDate, // Rotate completedDate to lastServiceDate
+                        completedDate: null,
+                        note: '進入新季度，自動重設為未完成'
+                    };
+                }
+            }
+            return t;
+        });
+        return { updatedTasks, hasChanges };
+    };
+
     // Load initial data from local server or localStorage or mock data
     useEffect(() => {
         const fetchData = async () => {
@@ -31,12 +57,18 @@ export const useMaintenanceData = () => {
                 if (response.ok) {
                     const data = await response.json();
                     if (data.projects && data.tasks) {
+                        const { updatedTasks, hasChanges } = autoResetNewQuarterTasks(data.projects, data.tasks);
+                        
                         setProjects(data.projects);
-                        setTasks(data.tasks);
+                        setTasks(updatedTasks);
                         
                         // Sync backup to localStorage
                         localStorage.setItem('MAINTAINSYS_PROJECTS', JSON.stringify(data.projects));
-                        localStorage.setItem('MAINTAINSYS_TASKS', JSON.stringify(data.tasks));
+                        localStorage.setItem('MAINTAINSYS_TASKS', JSON.stringify(updatedTasks));
+                        
+                        if (hasChanges) {
+                            saveToServer(data.projects, updatedTasks);
+                        }
                         setIsLoadingData(false);
                         return;
                     }
@@ -52,23 +84,30 @@ export const useMaintenanceData = () => {
                 if (storedProjects && storedTasks) {
                     const parsedProjects = JSON.parse(storedProjects);
                     const parsedTasks = JSON.parse(storedTasks);
-                    setProjects(parsedProjects);
-                    setTasks(parsedTasks);
                     
-                    // Sync back to API server
-                    saveToServer(parsedProjects, parsedTasks);
+                    const { updatedTasks, hasChanges } = autoResetNewQuarterTasks(parsedProjects, parsedTasks);
+                    
+                    setProjects(parsedProjects);
+                    setTasks(updatedTasks);
+                    
+                    if (hasChanges) {
+                        localStorage.setItem('MAINTAINSYS_TASKS', JSON.stringify(updatedTasks));
+                    }
+                    saveToServer(parsedProjects, updatedTasks);
                 } else {
                     // First time load: use mock data
                     const initialProjects = INITIAL_PROJECTS;
                     const initialTasks = generateTasks();
                     
+                    const { updatedTasks } = autoResetNewQuarterTasks(initialProjects, initialTasks);
+                    
                     setProjects(initialProjects);
-                    setTasks(initialTasks);
+                    setTasks(updatedTasks);
                     
                     // Save to both
                     localStorage.setItem('MAINTAINSYS_PROJECTS', JSON.stringify(initialProjects));
-                    localStorage.setItem('MAINTAINSYS_TASKS', JSON.stringify(initialTasks));
-                    saveToServer(initialProjects, initialTasks);
+                    localStorage.setItem('MAINTAINSYS_TASKS', JSON.stringify(updatedTasks));
+                    saveToServer(initialProjects, updatedTasks);
                 }
             } catch (error) {
                 console.error("Failed to load fallback data:", error);
