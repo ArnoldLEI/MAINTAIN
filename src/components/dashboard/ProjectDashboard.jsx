@@ -153,10 +153,10 @@ export default function ProjectDashboard({ project, tasks, updateTask, viewType 
             </header>
 
             {/* Content */}
-            <main className="flex-1 overflow-hidden p-6">
-                <div className="grid grid-cols-12 gap-6 h-full max-w-7xl mx-auto">
+            <main className="flex-1 overflow-y-auto xl:overflow-hidden p-6">
+                <div className="grid grid-cols-12 gap-6 xl:h-full max-w-7xl mx-auto">
                     {/* Left Stats */}
-                    <div className={`${isMobile ? 'hidden' : 'col-span-4 flex'} flex-col gap-6 overflow-y-auto pr-2`}>
+                    <div className={`${isMobile ? 'hidden' : 'col-span-12 xl:col-span-4 xl:overflow-y-auto'} flex flex-col gap-6 pr-2`}>
                         <div className="bg-slate-900 p-6 rounded-2xl shadow-md border border-slate-800 shrink-0">
                             <h3 className="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
                                 <PieChart className="w-5 h-5 text-blue-400" />
@@ -235,7 +235,7 @@ export default function ProjectDashboard({ project, tasks, updateTask, viewType 
                     </div>
 
                     {/* Right Task List */}
-                    <div className={`${isMobile ? 'col-span-12' : 'col-span-8'} h-full flex flex-col min-h-0`}>
+                    <div className={`${isMobile ? 'col-span-12' : 'col-span-12 xl:col-span-8'} h-full min-h-[550px] xl:min-h-0 flex flex-col`}>
                         <div className="bg-slate-900 rounded-2xl shadow-md border border-slate-800 flex flex-col h-full overflow-hidden">
                             <div className={`px-6 py-4 border-b flex justify-between items-center shrink-0 transition-colors duration-300 ${viewMode === 'pending' ? 'bg-red-950/20 border-slate-800' : 'bg-emerald-950/20 border-slate-800'
                                 }`}>
