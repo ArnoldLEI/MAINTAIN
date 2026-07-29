@@ -17,21 +17,25 @@ export const getQuarterStart = (projectStartDate) => {
 
     const start = new Date(projectStartDate);
     const now = new Date();
-    const startMonth = start.getMonth();
-    const nowMonth = now.getMonth();
-    const nowYear = now.getFullYear();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    const monthOffset = (nowMonth - startMonth + 12) % 12;
-    const qIndex = Math.floor(monthOffset / 3);
+    const addMonths = (date, months) => {
+        const d = new Date(date);
+        d.setMonth(d.getMonth() + months);
+        return d;
+    };
 
-    const currentQStartMonth = (startMonth + qIndex * 3) % 12;
-
-    let qStartYear = nowYear;
-    if (currentQStartMonth > nowMonth) {
-        qStartYear = nowYear - 1;
+    let k = 0;
+    while (true) {
+        const nextQStart = addMonths(start, 3 * (k + 1));
+        if (nextQStart <= today) {
+            k++;
+        } else {
+            break;
+        }
     }
 
-    return new Date(qStartYear, currentQStartMonth, 1);
+    return addMonths(start, 3 * k);
 };
 
 export const getProjectQuarterData = (project) => {
@@ -39,38 +43,32 @@ export const getProjectQuarterData = (project) => {
 
     const start = new Date(project.startDate);
     const now = new Date();
-    const startMonth = start.getMonth();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    const monthOffset = (now.getMonth() - startMonth + 12) % 12;
-    const qIndex = Math.floor(monthOffset / 3);
-    const currentQStartMonth = (startMonth + qIndex * 3) % 12;
-    const currentQEndMonth = (currentQStartMonth + 2) % 12;
+    const addMonths = (date, months) => {
+        const d = new Date(date);
+        d.setMonth(d.getMonth() + months);
+        return d;
+    };
 
-    let endYear = now.getFullYear();
-
-    if (currentQEndMonth < currentQStartMonth) {
-        if (now.getMonth() >= currentQStartMonth) {
-            endYear += 1;
+    let k = 0;
+    while (true) {
+        const nextQStart = addMonths(start, 3 * (k + 1));
+        if (nextQStart <= today) {
+            k++;
+        } else {
+            break;
         }
     }
 
-    let startYear = endYear;
-    if (currentQEndMonth < currentQStartMonth) {
-        startYear = endYear - 1;
-    }
+    const qStart = addMonths(start, 3 * k);
+    const nextQStart = addMonths(start, 3 * (k + 1));
+    const qEnd = new Date(nextQStart);
+    qEnd.setDate(qEnd.getDate() - 1);
 
-    const qStartDate = new Date(startYear, currentQStartMonth, 1);
-    const qEndDate = new Date(endYear, currentQEndMonth + 1, 0);
-
-    // Calculate daysLeft by setting both to local midnight
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const diffTime = qEndDate - today;
+    const diffTime = qEnd - today;
     let daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     if (daysLeft < 0) daysLeft = 0;
-
-    const m1 = currentQStartMonth + 1;
-    const m3 = currentQEndMonth + 1;
-    const range = `${m1}-${m3}月`;
 
     const formatLocal = (date) => {
         const y = date.getFullYear();
@@ -79,10 +77,15 @@ export const getProjectQuarterData = (project) => {
         return `${y}-${m}-${d}`;
     };
 
-    const rangeText = `${formatLocal(qStartDate)} ~ ${formatLocal(qEndDate)}`;
+    const rangeText = `${formatLocal(qStart)} ~ ${formatLocal(qEnd)}`;
+    const m1 = qStart.getMonth() + 1;
+    const d1 = qStart.getDate();
+    const m2 = qEnd.getMonth() + 1;
+    const d2 = qEnd.getDate();
+    const range = `${m1}/${d1}~${m2}/${d2}`;
 
     return {
-        qName: `Q${qIndex + 1}`,
+        qName: `Q${k + 1}`,
         range,
         rangeText,
         daysLeft
