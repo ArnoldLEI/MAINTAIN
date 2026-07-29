@@ -6,12 +6,22 @@ const http = require('http');
 let mainWindow;
 let server;
 
+function getDataFilePath() {
+  const exeDir = path.dirname(process.execPath);
+  const isProgramFiles = exeDir.toLowerCase().includes('program files') || exeDir.toLowerCase().includes('system32');
+  const isDev = !app.isPackaged;
+  
+  if (!isProgramFiles && !isDev) {
+    return path.join(exeDir, 'db.json');
+  }
+  return path.join(app.getPath('userData'), 'db.json');
+}
+
 function startLocalServer() {
   server = http.createServer((req, res) => {
     // API endpoints
     if (req.url.startsWith('/api/data')) {
-      const userDataPath = app.getPath('userData');
-      const dataFilePath = path.join(userDataPath, 'db.json');
+      const dataFilePath = getDataFilePath();
 
       if (req.method === 'GET') {
         if (fs.existsSync(dataFilePath)) {
