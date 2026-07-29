@@ -25,22 +25,17 @@ export default function App() {
     const [searchTerm, setSearchTerm] = useState('');
 
     // Mobile navigation state
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+    const [isMobile] = useState(() => {
+        const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isTouch = window.matchMedia("(pointer: coarse)").matches;
+        return isMobileUA || isTouch;
+    });
     const [mobileTab, setMobileTab] = useState('list'); // 'list' | 'details'
 
     // Modals Data
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [editProjectModal, setEditProjectModal] = useState({ isOpen: false, project: null });
     const [deleteModal, setDeleteModal] = useState({ isOpen: false, project: null });
-
-    // Window size listener
-    React.useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth < 1024);
-        };
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
 
     // Unique districts sorted
     const districts = useMemo(() => {
@@ -187,6 +182,7 @@ export default function App() {
             {/* Sidebar */}
             {(!isMobile || mobileTab === 'list') && (
                 <Sidebar
+                    isMobile={isMobile}
                     projects={enrichedProjects} // Pass enriched for progress bars etc
                     tasks={tasks}
                     selectedProjectId={selectedProjectId}
@@ -206,6 +202,7 @@ export default function App() {
             {/* Main Content */}
             {(!isMobile || mobileTab === 'details') && (
                 <ProjectDashboard
+                    isMobile={isMobile}
                     project={dashboardProject}
                     tasks={dashboardTasks}
                     updateTask={updateTask}

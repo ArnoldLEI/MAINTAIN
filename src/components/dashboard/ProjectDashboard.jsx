@@ -3,7 +3,7 @@ import { PieChart, AlertCircle, Calendar, Building2, BarChart3, ListFilter, Chec
 import { getProjectQuarterData, getDaysDiff } from '../../utils/dateUtils';
 import { ConfirmCompletionModal, EditTaskDateModal } from '../modals/TaskModals';
 
-export default function ProjectDashboard({ project, tasks, updateTask, viewType = 'project', onBackToList }) {
+export default function ProjectDashboard({ project, tasks, updateTask, viewType = 'project', onBackToList, isMobile }) {
     const [viewMode, setViewMode] = useState('pending');
     const [taskDistrictFilter, setTaskDistrictFilter] = useState('All');
 
@@ -105,10 +105,10 @@ export default function ProjectDashboard({ project, tasks, updateTask, viewType 
             <header className="bg-slate-900 border-b border-slate-800 px-6 py-4 flex justify-between items-center shadow-md shrink-0">
                 <div>
                     <div className="flex items-center gap-2 mb-1">
-                        {onBackToList && (
+                        {isMobile && onBackToList && (
                             <button
                                 onClick={onBackToList}
-                                className="lg:hidden text-slate-300 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors mr-1"
+                                className="text-slate-300 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors mr-1"
                                 title="返回列表"
                             >
                                 <ArrowLeft className="w-5 h-5" />
@@ -156,7 +156,7 @@ export default function ProjectDashboard({ project, tasks, updateTask, viewType 
             <main className="flex-1 overflow-hidden p-6">
                 <div className="grid grid-cols-12 gap-6 h-full max-w-7xl mx-auto">
                     {/* Left Stats */}
-                    <div className="hidden lg:flex col-span-4 flex-col gap-6 overflow-y-auto pr-2">
+                    <div className={`${isMobile ? 'hidden' : 'col-span-4 flex'} flex-col gap-6 overflow-y-auto pr-2`}>
                         <div className="bg-slate-900 p-6 rounded-2xl shadow-md border border-slate-800 shrink-0">
                             <h3 className="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
                                 <PieChart className="w-5 h-5 text-blue-400" />
@@ -235,7 +235,7 @@ export default function ProjectDashboard({ project, tasks, updateTask, viewType 
                     </div>
 
                     {/* Right Task List */}
-                    <div className="col-span-12 lg:col-span-8 h-full flex flex-col min-h-0">
+                    <div className={`${isMobile ? 'col-span-12' : 'col-span-8'} h-full flex flex-col min-h-0`}>
                         <div className="bg-slate-900 rounded-2xl shadow-md border border-slate-800 flex flex-col h-full overflow-hidden">
                             <div className={`px-6 py-4 border-b flex justify-between items-center shrink-0 transition-colors duration-300 ${viewMode === 'pending' ? 'bg-red-950/20 border-slate-800' : 'bg-emerald-950/20 border-slate-800'
                                 }`}>
