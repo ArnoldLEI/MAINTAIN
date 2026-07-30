@@ -15,10 +15,7 @@
     "appId": "com.maintainsys.app",
     "productName": "MaintainSYS",
     "win": {
-      "target": [
-        "nsis",
-        "portable"
-      ],
+      "target": "nsis",
       "icon": "icon.png"
     },
     "nsis": {

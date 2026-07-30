@@ -1,3 +1,12 @@
+export const parseLocalDate = (dateStr) => {
+    if (!dateStr) return new Date();
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+        return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    }
+    return new Date(dateStr);
+};
+
 export const getPastDate = (daysAgo) => {
     const date = new Date();
     date.setDate(date.getDate() - daysAgo);
@@ -6,16 +15,17 @@ export const getPastDate = (daysAgo) => {
 
 export const getDaysDiff = (dateStr) => {
     if (!dateStr) return 999;
-    const targetDate = new Date(dateStr);
-    const today = new Date();
-    const diffTime = Math.abs(today - targetDate);
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const targetDate = parseLocalDate(dateStr);
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const diffTime = today - targetDate;
+    return Math.floor(diffTime / (1000 * 60 * 60 * 24));
 };
 
 export const getQuarterStart = (projectStartDate) => {
     if (!projectStartDate) return new Date(0);
 
-    const start = new Date(projectStartDate);
+    const start = parseLocalDate(projectStartDate);
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
@@ -41,7 +51,7 @@ export const getQuarterStart = (projectStartDate) => {
 export const getProjectQuarterData = (project) => {
     if (!project) return { qName: '', range: '', rangeText: '', daysLeft: 0 };
 
-    const start = new Date(project.startDate);
+    const start = parseLocalDate(project.startDate);
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { INITIAL_PROJECTS, generateTasks } from '../utils/mockData';
-import { getQuarterStart, getPastDate } from '../utils/dateUtils';
+import { getQuarterStart, getPastDate, parseLocalDate } from '../utils/dateUtils';
 
 export const useMaintenanceData = () => {
     const [projects, setProjects] = useState([]);
@@ -29,7 +29,7 @@ export const useMaintenanceData = () => {
             const qStart = getQuarterStart(proj.startDate);
             // If task is Completed, but the completion date is older than the current quarter's start date
             if (t.status === 'Completed' && t.completedDate) {
-                const compDate = new Date(t.completedDate);
+                const compDate = parseLocalDate(t.completedDate);
                 if (compDate < qStart) {
                     hasChanges = true;
                     return {
@@ -139,7 +139,7 @@ export const useMaintenanceData = () => {
         const quarterStartDate = getQuarterStart(newProj.startDate);
 
         const newTasks = importedPoints.map((pt, idx) => {
-            const isCompleted = pt.lastServiceDate ? new Date(pt.lastServiceDate) >= quarterStartDate : false;
+            const isCompleted = pt.lastServiceDate ? parseLocalDate(pt.lastServiceDate) >= quarterStartDate : false;
             return {
                 id: `T-${newProj.id}-${String(idx).padStart(3, '0')}`,
                 projectId: newProj.id,
